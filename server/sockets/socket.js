@@ -28,7 +28,7 @@ io.on('connection', (client) => {
         client.join(data.room);
 
         users.addPerson(client.id, data.name, data.room );
-
+        client.broadcast.to(data.room).emit('createMessage', createMessage('Admin',`${data.name} connected`))
         client.broadcast.to(data.room).emit('ListPeople', users.getPersonsByRoom(data.room) );
 
         return callback(users.getPersonsByRoom(data.room));
@@ -41,21 +41,25 @@ io.on('connection', (client) => {
         console.log('User disconnect',client.id);
         let deletePerson = users.deletePerson(client.id);
         
-        client.broadcast.to(deletePerson.room).emit('createMessage', createMessage('Admin',`${deletePerson} got disconnected`))
+        client.broadcast.to(deletePerson.room).emit('createMessage', createMessage('Admin',`${deletePerson.name} got disconnected`))
         client.broadcast.to(deletePerson.room).emit('ListPeople', users.getPersonsByRoom(deletePerson.room) );
     });
 
 
     /**
      * When the client sends a message, this message is sent to all people
+     * @param data have message, name, room...
+     * @param callback to respond to the client who sent the data.
      */
-    client.on('createMessage', (data) => {
+    client.on('createMessage', (data, callback) => {
         console.log('server - create message', data);
 
         let person = users.getPersonByID(client.id);
         let msg = createMessage(person.name, data.message);
         
         client.broadcast.to(person.room).emit('createMessage', msg);
+
+        callback(msg);
     });
 
 
