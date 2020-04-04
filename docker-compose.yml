@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  app_node:
+    container_name: chat-system_app_node
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    command: 'npx nodemon server/app.js -e html,css,js'
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/srv/src
+      - node_modules:/srv/src/node_modules
+
+volumes:
+  node_modules:

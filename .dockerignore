@@ -1,0 +1,12 @@
+# Ignore Files and Folders to Copy
+npm-debug.log
+.dockerignore
+# node_modules
+# Dockerfile*
+docker-compose*
+.dockerignore
+.git
+.gitignore
+README.md
+LICENSE
+.vscode
